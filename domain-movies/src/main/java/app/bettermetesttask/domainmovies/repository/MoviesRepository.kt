@@ -7,6 +7,6 @@ interface MoviesRepository {
 
     suspend fun getAll(): Result<List<Movie>>
 
-    suspend fun get(id: Int): Result<Movie>
+    suspend fun get(id: Int): Result<Movie?>
 
 }
