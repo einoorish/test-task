@@ -12,10 +12,6 @@ import app.bettermetesttask.domainmovies.interactors.RemoveMovieFromFavoritesUse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -38,31 +34,36 @@ class MoviesViewModel @Inject constructor(
     fun updateMovies() {
         _movies.tryEmit(Loading)
         viewModelScope.launch {
-            observeMoviesUseCase().map {
-                when {
-                    it is Success && it.data.isNotEmpty() -> Loaded(it.data)
-                    else -> LoadedEmpty
+            observeMoviesUseCase().collect {
+                if(it is Success && it.data.isNotEmpty()) {
+                    _movies.value = Loaded(it.data)
+                    updateSelectedMovieInfo(it.data)
+                } else {
+                    _movies.value = LoadedEmpty
                 }
-            }.onEach { state ->
-                Timber.d("Movies state updated: $state")
-                _movies.tryEmit(state)
-            }.take(1).collect()
+            }
         }
+    }
+
+    private fun updateSelectedMovieInfo(movies: List<Movie>){
+        val oldData = (_selectedMovie.value as? Visible) ?: return
+        _selectedMovie.value = movies.firstOrNull { it.id ==  oldData.movie.id}
+            ?.let { Visible(it) } ?: Hidden
     }
 
     fun switchLikeStatus(movie: Movie) {
         viewModelScope.launch {
             if (movie.liked) {
-                likeMovieUseCase(movie.id)
-            } else {
                 dislikeMovieUseCase(movie.id)
+            } else {
+                likeMovieUseCase(movie.id)
             }
         }
     }
 
     fun openMovieDetails(movie: Movie) {
         Timber.d("Requested to open movie details for $movie")
-        _selectedMovie.tryEmit(Visible(movie))
+        _selectedMovie.value = Visible(movie)
     }
 
 }

@@ -3,8 +3,7 @@ package app.bettermetesttask.movies.sections
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import androidx.cardview.widget.CardView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import app.bettermetesttask.domainmovies.entries.Movie
 import app.bettermetesttask.featurecommon.utils.images.GlideApp
@@ -14,22 +13,15 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class MovieDetailBottomSheet @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : CardView(context, attrs, defStyleAttr) {
+) : CoordinatorLayout(context, attrs, defStyleAttr) {
 
-    private lateinit var binding: MovieDetailsBinding
+    private val view = LayoutInflater.from(context).inflate(R.layout.movie_details, this, true)
+    private val binding =  MovieDetailsBinding.bind(view)
 
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<MovieDetailBottomSheet>
-
-    override fun onViewAdded(child: View?) {
-        super.onViewAdded(child)
-
-        val view = LayoutInflater.from(context).inflate(R.layout.movie_details, this, true)
-        binding = MovieDetailsBinding.bind(view)
-
-        bottomSheetBehavior = BottomSheetBehavior.from(this).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
+    private  val bottomSheetBehavior = BottomSheetBehavior.from(binding.rootView).apply {
+        state = BottomSheetBehavior.STATE_HIDDEN
     }
+
 
     fun show(item: Movie, onLikeClicked: (Movie) -> Unit){
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -42,10 +34,9 @@ class MovieDetailBottomSheet @JvmOverloads constructor(
             btnLike.setImageDrawable(
                 ContextCompat.getDrawable(
                     binding.rootView.context,
-                    if (item.liked) {
-                        R.drawable.ic_favorite_liked
-                    } else {
-                        R.drawable.ic_favorite_not_liked
+                    when {
+                        item.liked -> R.drawable.ic_favorite_liked
+                        else ->R.drawable.ic_favorite_not_liked
                     }
                 )
             )
