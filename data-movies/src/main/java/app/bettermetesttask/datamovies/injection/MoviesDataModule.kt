@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import app.bettermetesttask.datamovies.database.DB_NAME
 import app.bettermetesttask.datamovies.database.MoviesDatabase
+import app.bettermetesttask.datamovies.repository.LikesRepositoryImpl
 import app.bettermetesttask.datamovies.repository.MoviesRepositoryImpl
+import app.bettermetesttask.domainmovies.repository.LikesRepository
 import app.bettermetesttask.domainmovies.repository.MoviesRepository
 import dagger.Binds
 import dagger.Module
@@ -25,4 +27,7 @@ abstract class MoviesDataModule {
 
     @Binds
     abstract fun bindMoviesRepository(repositoryImpl: MoviesRepositoryImpl): MoviesRepository
+
+    @Binds
+    abstract fun bindLikesRepository(repositoryImpl: LikesRepositoryImpl): LikesRepository
 }

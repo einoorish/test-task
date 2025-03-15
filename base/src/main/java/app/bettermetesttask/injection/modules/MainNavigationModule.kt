@@ -11,6 +11,7 @@ import app.bettermetesttask.navigation.HomeNavigatorImpl
 import app.bettermetesttask.sections.home.HomeActivity
 import dagger.Module
 import dagger.Provides
+import androidx.navigation.findNavController
 
 @Module
 class MainNavigationModule {
@@ -18,7 +19,7 @@ class MainNavigationModule {
     @Provides
     @ActivityScope
     fun provideNavController(activity: HomeActivity): NavController =
-        Navigation.findNavController(activity, R.id.mainNavigationFragment)
+        activity.findNavController(R.id.mainNavigationFragment)
 
     @Provides
     fun bindNavigator(navigatorImpl: HomeNavigatorImpl): HomeNavigator {

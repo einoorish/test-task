@@ -1,12 +1,9 @@
 package app.bettermetesttask.datamovies.repository.stores
 
+import android.database.sqlite.SQLiteException
 import app.bettermetesttask.datamovies.database.MoviesDatabase
 import app.bettermetesttask.datamovies.database.dao.MoviesDao
-import app.bettermetesttask.datamovies.database.entities.LikedMovieEntity
 import app.bettermetesttask.datamovies.database.entities.MovieEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class MoviesLocalStore @Inject constructor(
@@ -16,23 +13,24 @@ class MoviesLocalStore @Inject constructor(
     private val moviesDao: MoviesDao
         get() = database.getMoviesDao()
 
-    suspend fun getMovies(): List<MovieEntity> {
+    @Throws(SQLiteException::class)
+    suspend fun getAll(): List<MovieEntity> {
         return moviesDao.selectMovies()
     }
 
-    suspend fun getMovie(id: Int): MovieEntity {
+    @Throws(NoSuchElementException::class)
+    suspend fun get(id: Int): MovieEntity {
         return moviesDao.selectMovieById(id).first()
     }
 
-    suspend fun likeMovie(id: Int) {
-        moviesDao.insertLikedEntry(LikedMovieEntity(id))
+    @Throws(SQLiteException::class)
+    suspend fun insert(movie: MovieEntity) {
+        moviesDao.insertMovie(movie)
     }
 
-    suspend fun dislikeMovie(id: Int) {
-        moviesDao.removeLikedEntry(id)
+    @Throws(SQLiteException::class)
+    suspend fun insertAll(movies: List<MovieEntity>) {
+        moviesDao.insertMovies(movies)
     }
 
-    fun observeLikedMoviesIds(): Flow<List<Int>> {
-        return moviesDao.selectLikedEntries().map { movieIdsFlow -> movieIdsFlow.map { it.movieId } }
-    }
 }

@@ -21,17 +21,11 @@ interface MoviesDao{
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMovie(movie: MovieEntity)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertMovies(movies: List<MovieEntity>)
+
     @Update
     suspend fun updateMovie(movie: MovieEntity)
-
-    @Query("SELECT * FROM LikedMovieEntry")
-    fun selectLikedEntries(): Flow<List<LikedMovieEntity>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLikedEntry(entry: LikedMovieEntity)
-
-    @Query("DELETE FROM LikedMovieEntry WHERE movie_id = :movieId")
-    suspend fun removeLikedEntry(movieId: Int)
 
     @Query("DELETE FROM MoviesTable")
     suspend fun deleteMovies()
