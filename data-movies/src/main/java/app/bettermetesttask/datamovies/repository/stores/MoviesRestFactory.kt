@@ -2,7 +2,7 @@ package app.bettermetesttask.datamovies.repository.stores
 
 import app.bettermetesttask.domainmovies.entries.Movie
 
-object MoviesFactory {
+object MoviesRestFactory {
     private val moviePosterUrls = listOf(
         "https://www.themoviedb.org/t/p/w440_and_h660_face/x6FsYvt33846IQnDSFxla9j0RX8.jpg",
         "https://www.themoviedb.org/t/p/w440_and_h660_face/nJUHX3XL1jMkk8honUZnUmudFb9.jpg",

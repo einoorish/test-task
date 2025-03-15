@@ -2,6 +2,7 @@ package app.bettermetesttask.domainmovies.interactors
 
 import app.bettermetesttask.domaincore.utils.Result
 import app.bettermetesttask.domainmovies.entries.Movie
+import app.bettermetesttask.domainmovies.repository.LikesRepository
 import app.bettermetesttask.domainmovies.repository.MoviesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -9,13 +10,14 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ObserveMoviesUseCase @Inject constructor(
-    private val repository: MoviesRepository
+    private val repository: MoviesRepository,
+    private val likesRepository: LikesRepository
 ) {
 
     suspend operator fun invoke(): Flow<Result<List<Movie>>> {
-        return when (val result = repository.getMovies()) {
+        return when (val result = repository.getAll()) {
             is Result.Success -> {
-                repository.observeLikedMovieIds()
+                likesRepository.observe()
                     .map { likedMoviesIds ->
                         val movies = result.data.map {
                             if (likedMoviesIds.contains(it.id)) {
