@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +45,7 @@ import androidx.fragment.app.viewModels
 import app.bettermetesttask.domainmovies.entries.Movie
 import app.bettermetesttask.featurecommon.injection.utils.Injectable
 import app.bettermetesttask.featurecommon.injection.viewmodel.SimpleViewModelProviderFactory
+import app.bettermetesttask.movies.R
 import app.bettermetesttask.movies.sections.MoviesState
 import app.bettermetesttask.movies.sections.MoviesViewModel
 import coil3.compose.AsyncImage
@@ -70,12 +73,12 @@ class MoviesComposeFragment : Fragment(), Injectable {
                 ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
             )
             setContent {
-                val viewState by viewModel.moviesStateFlow.collectAsState()
-                MoviesComposeScreen(viewState, likeMovie = { movie ->
-                    viewModel.likeMovie(movie)
-                }, viewLoaded = {
-                    viewModel.loadMovies()
-                })
+                val viewState by viewModel.movies.collectAsState()
+                MoviesComposeScreen(
+                    moviesState = viewState,
+                    likeMovie = viewModel::switchLikeStatus,
+                    viewLoaded = viewModel::updateMovies
+                )
             }
         }
     }
@@ -112,6 +115,14 @@ private fun MoviesComposeScreen(
                 ) {
                     CircularProgressIndicator()
                 }
+            }
+
+            MoviesState.LoadedEmpty -> {
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(R.drawable.nomovies),
+                    contentDescription = "No movies :("
+                )
             }
         }
     }

@@ -10,6 +10,7 @@ import app.bettermetesttask.domainmovies.entries.Movie
 import app.bettermetesttask.featurecommon.utils.images.GlideApp
 import app.bettermetesttask.movies.R
 import app.bettermetesttask.movies.databinding.MovieItemBinding
+import timber.log.Timber
 import javax.inject.Inject
 
 class MoviesAdapter @Inject constructor() : ListAdapter<Movie, MoviesAdapter.MoviesHolder>(MovieItemDiffCallback()) {
@@ -28,14 +29,12 @@ class MoviesAdapter @Inject constructor() : ListAdapter<Movie, MoviesAdapter.Mov
     inner class MoviesHolder(private val binding: MovieItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Movie) {
             with(binding) {
-                titleTv.text = item.title
-                descriptionTv.text = item.description
-                GlideApp.with(binding.rootLayout)
+                GlideApp.with(root.context)
                     .load(item.posterPath)
                     .into(posterIv)
                 btnLike.setImageDrawable(
                     ContextCompat.getDrawable(
-                        binding.rootLayout.context,
+                        root.context,
                         if (item.liked) {
                             R.drawable.ic_favorite_liked
                         } else {
@@ -46,7 +45,7 @@ class MoviesAdapter @Inject constructor() : ListAdapter<Movie, MoviesAdapter.Mov
                 btnLike.setOnClickListener {
                     onItemLiked?.invoke(item)
                 }
-                rootLayout.setOnClickListener {
+                posterIv.setOnClickListener {
                     onItemClicked?.invoke(item)
                 }
             }
@@ -56,7 +55,7 @@ class MoviesAdapter @Inject constructor() : ListAdapter<Movie, MoviesAdapter.Mov
 
 class MovieItemDiffCallback : DiffUtil.ItemCallback<Movie>() {
     override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem == newItem
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {

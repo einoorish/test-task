@@ -1,33 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvList"
-        android:layout_width="match_parent"
+        android:id="@+id/moviesRV"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:fontFamily="@font/roboto_mono"
-        android:gravity="center"
-        android:text="@string/movies_title"
-        android:textColor="@color/sandy_orange"
-        android:textSize="24sp"
-        android:visibility="gone"
-        tools:visibility="visible" />
-    
+        android:gravity="center" />
+
+    <ImageView
+        android:id="@+id/fallbackIV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/nomovies"/>
+
     <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:layout_gravity="center"
         android:foregroundTint="@color/pure_red"
         android:indeterminateTint="@color/pure_red"
-        android:id="@+id/progressBar"
-        android:visibility="gone"
         tools:visibility="visible" />
-</FrameLayout>
+
+    <app.bettermetesttask.movies.sections.MovieDetailBottomSheet
+        android:id="@+id/movieDetailsBottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="56dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
+
+</LinearLayout>
